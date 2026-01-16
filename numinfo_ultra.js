@@ -1,5 +1,5 @@
 /**
- * 🔥 NUMINFO ULTRA — HUMAN BROWSER MODE 🔥
+ * 🔥 NUMINFO ULTRA — PROOT SAFE (HEADLESS) 🔥
  *
  * 👨‍💻 Developer : Faizi Mods
  * 📱 WhatsApp   : 03706058550
@@ -7,7 +7,6 @@
  */
 
 const { chromium } = require("playwright");
-const fs = require("fs");
 const readline = require("readline");
 
 // ================= COLORS =================
@@ -19,7 +18,6 @@ const C = {
   blue: "\x1b[34m",
   magenta: "\x1b[35m",
   cyan: "\x1b[36m",
-  white: "\x1b[37m",
   bold: "\x1b[1m",
 };
 
@@ -38,7 +36,7 @@ function banner() {
   );
 
   console.log(
-    `${C.yellow}🔥 NUMINFO ULTRA — Real Human Browser Mode${C.reset}\n` +
+    `${C.yellow}🔥 NUMINFO ULTRA — Headless Proot Mode${C.reset}\n` +
     `${C.green}👨‍💻 Developer : Faizi Mods${C.reset}\n` +
     `${C.cyan}📱 WhatsApp   : 03706058550${C.reset}\n` +
     `${C.magenta}📢 Telegram   : Faizi Mods${C.reset}\n` +
@@ -103,24 +101,25 @@ async function extract(page) {
 
   console.log(`${C.green}📂 Loaded ${numbers.length} number(s)\n${C.reset}`);
 
-  // 🔥 HUMAN-LIKE BROWSER
+  // ✅ PROOT SAFE HEADLESS BROWSER
   const browser = await chromium.launch({
-    headless: false,
-    slowMo: 80,
-    args: ["--disable-blink-features=AutomationControlled"],
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-blink-features=AutomationControlled",
+    ],
   });
 
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     userAgent:
       "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137 Mobile Safari/537.36",
-    locale: "en-US",
-    timezoneId: "Asia/Karachi",
   });
 
   const page = await context.newPage();
 
-  // ✅ SAFE GOTO (ANTI-BLOCK)
+  // SAFE GOTO
   await page.goto(
     "https://paksim.info/search-free-sim-database-online-2022.php",
     {
@@ -128,8 +127,6 @@ async function extract(page) {
       timeout: 60000,
     }
   );
-
-  console.log(`${C.yellow}🟢 Browser loaded — if captcha appears, solve it manually${C.reset}\n`);
 
   for (let i = 0; i < numbers.length; i++) {
     const num = numbers[i];
@@ -139,10 +136,10 @@ async function extract(page) {
 
     try {
       await page.fill("input.form-control", num);
-      await sleep(1500 + Math.random() * 1500);
+      await sleep(1500);
 
       await page.click("button, input[type=submit]");
-      await sleep(3000 + Math.random() * 2000);
+      await sleep(3000);
 
       const rows = await extract(page);
 
@@ -151,10 +148,10 @@ async function extract(page) {
         for (const r of rows) {
           console.log(
             `${C.magenta}━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n` +
-            `${C.yellow}📞 Number : ${C.white}${r.number}${C.reset}\n` +
-            `${C.cyan}🧑 Name   : ${C.white}${r.name}${C.reset}\n` +
-            `${C.red}🆔 CNIC   : ${C.white}${r.cnic}${C.reset}\n` +
-            `${C.green}🏠 Addr   : ${C.white}${r.address}${C.reset}`
+            `${C.yellow}📞 Number : ${r.number}${C.reset}\n` +
+            `${C.cyan}🧑 Name   : ${r.name}${C.reset}\n` +
+            `${C.red}🆔 CNIC   : ${r.cnic}${C.reset}\n` +
+            `${C.green}🏠 Addr   : ${r.address}${C.reset}`
           );
         }
       } else {
@@ -165,8 +162,9 @@ async function extract(page) {
     }
 
     console.log("");
-    await sleep(2500);
+    await sleep(2000);
   }
 
+  await browser.close();
   console.log(`${C.green}✔ Process completed${C.reset}`);
 })();
