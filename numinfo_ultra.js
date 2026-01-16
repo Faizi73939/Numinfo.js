@@ -1,5 +1,5 @@
 /**
- * 🔥 NUMINFO ULTRA — PLAYWRIGHT EDITION 🔥
+ * 🔥 NUMINFO ULTRA — HUMAN BROWSER MODE 🔥
  *
  * 👨‍💻 Developer : Faizi Mods
  * 📱 WhatsApp   : 03706058550
@@ -27,25 +27,22 @@ const C = {
 function banner() {
   console.clear();
   console.log(
-    C.bold +
-      C.cyan +
-      `
-███╗   ██╗██╗   ██╗███╗   ███╗██╗███╗   ██╗███████╗ ██████╗
-████╗  ██║██║   ██║████╗ ████║██║████╗  ██║██╔════╝██╔═══██╗
-██╔██╗ ██║██║   ██║██╔████╔██║██║██╔██╗ ██║█████╗  ██║   ██║
-██║╚██╗██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██╔══╝  ██║   ██║
-██║ ╚████║╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║██║     ╚██████╔╝
-╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝
-` +
-      C.reset
+    C.bold + C.cyan + `
+███╗   ██╗██╗   ██╗███╗   ███╗██╗███╗   ██╗███████╗
+████╗  ██║██║   ██║████╗ ████║██║████╗  ██║██╔════╝
+██╔██╗ ██║██║   ██║██╔████╔██║██║██╔██╗ ██║█████╗
+██║╚██╗██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██╔══╝
+██║ ╚████║╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║██║
+╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝
+` + C.reset
   );
 
   console.log(
-    `${C.yellow}🔥 NUMINFO ULTRA — Real Browser Tool${C.reset}\n` +
-      `${C.green}👨‍💻 Developer : Faizi Mods${C.reset}\n` +
-      `${C.cyan}📱 WhatsApp   : 03706058550${C.reset}\n` +
-      `${C.magenta}📢 Telegram   : Faizi Mods${C.reset}\n` +
-      `${C.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n`
+    `${C.yellow}🔥 NUMINFO ULTRA — Real Human Browser Mode${C.reset}\n` +
+    `${C.green}👨‍💻 Developer : Faizi Mods${C.reset}\n` +
+    `${C.cyan}📱 WhatsApp   : 03706058550${C.reset}\n` +
+    `${C.magenta}📢 Telegram   : Faizi Mods${C.reset}\n` +
+    `${C.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n`
   );
 }
 
@@ -61,31 +58,24 @@ function askNumbers() {
       `${C.yellow}📲 Enter number(s) (comma separated): ${C.reset}`,
       (answer) => {
         rl.close();
-        const nums = answer
-          .split(",")
-          .map((n) => n.trim())
-          .filter(Boolean);
-        resolve(nums);
+        resolve(
+          answer
+            .split(",")
+            .map((n) => n.trim())
+            .filter(Boolean)
+        );
       }
     );
   });
 }
 
 // ================= UTILS =================
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-function ensureDirs() {
-  if (!fs.existsSync("output")) {
-    fs.mkdirSync("output");
-  }
-}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ================= SCRAPER =================
 async function extract(page) {
-  return await page.$$eval("tr", (rows) => {
-    return rows
+  return await page.$$eval("tr", (rows) =>
+    rows
       .slice(1)
       .map((tr) => {
         const tds = tr.querySelectorAll("td");
@@ -97,26 +87,26 @@ async function extract(page) {
           address: tds[3].innerText.trim(),
         };
       })
-      .filter(Boolean);
-  });
+      .filter(Boolean)
+  );
 }
 
 // ================= MAIN =================
-(async function main() {
+(async () => {
   banner();
-  ensureDirs();
-
   const numbers = await askNumbers();
 
   if (!numbers.length) {
-    console.log(`${C.red}❌ No numbers entered. Exiting.${C.reset}`);
+    console.log(`${C.red}❌ No numbers entered${C.reset}`);
     process.exit(0);
   }
 
   console.log(`${C.green}📂 Loaded ${numbers.length} number(s)\n${C.reset}`);
 
+  // 🔥 HUMAN-LIKE BROWSER
   const browser = await chromium.launch({
-    headless: true,
+    headless: false,
+    slowMo: 80,
     args: ["--disable-blink-features=AutomationControlled"],
   });
 
@@ -124,13 +114,22 @@ async function extract(page) {
     viewport: { width: 390, height: 844 },
     userAgent:
       "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137 Mobile Safari/537.36",
+    locale: "en-US",
+    timezoneId: "Asia/Karachi",
   });
 
   const page = await context.newPage();
+
+  // ✅ SAFE GOTO (ANTI-BLOCK)
   await page.goto(
     "https://paksim.info/search-free-sim-database-online-2022.php",
-    { waitUntil: "networkidle" }
+    {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    }
   );
+
+  console.log(`${C.yellow}🟢 Browser loaded — if captcha appears, solve it manually${C.reset}\n`);
 
   for (let i = 0; i < numbers.length; i++) {
     const num = numbers[i];
@@ -140,10 +139,10 @@ async function extract(page) {
 
     try {
       await page.fill("input.form-control", num);
-      await sleep(1200);
+      await sleep(1500 + Math.random() * 1500);
+
       await page.click("button, input[type=submit]");
-      await page.waitForLoadState("networkidle");
-      await sleep(2000);
+      await sleep(3000 + Math.random() * 2000);
 
       const rows = await extract(page);
 
@@ -151,11 +150,11 @@ async function extract(page) {
         console.log(`${C.green}✅ Data Found:${C.reset}`);
         for (const r of rows) {
           console.log(
-            `${C.magenta}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n` +
-              `${C.yellow}📞 Number : ${C.white}${r.number}${C.reset}\n` +
-              `${C.cyan}🧑 Name   : ${C.white}${r.name}${C.reset}\n` +
-              `${C.red}🆔 CNIC   : ${C.white}${r.cnic}${C.reset}\n` +
-              `${C.green}🏠 Addr   : ${C.white}${r.address}${C.reset}`
+            `${C.magenta}━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n` +
+            `${C.yellow}📞 Number : ${C.white}${r.number}${C.reset}\n` +
+            `${C.cyan}🧑 Name   : ${C.white}${r.name}${C.reset}\n` +
+            `${C.red}🆔 CNIC   : ${C.white}${r.cnic}${C.reset}\n` +
+            `${C.green}🏠 Addr   : ${C.white}${r.address}${C.reset}`
           );
         }
       } else {
@@ -169,9 +168,5 @@ async function extract(page) {
     await sleep(2500);
   }
 
-  await browser.close();
-  console.log(
-    `${C.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}\n` +
-      `${C.green}✔ Process completed${C.reset}`
-  );
+  console.log(`${C.green}✔ Process completed${C.reset}`);
 })();
