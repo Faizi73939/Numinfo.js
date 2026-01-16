@@ -1,0 +1,14 @@
+{
+  "name": "numinfo-ultra",
+  "version": "1.0.0",
+  "description": "NUMINFO ULTRA - Real Browser SIM Lookup (Playwright)",
+  "main": "numinfo_ultra.js",
+  "scripts": {
+    "start": "node numinfo_ultra.js"
+  },
+  "dependencies": {
+    "playwright": "^1.57.0"
+  },
+  "author": "Faizi Mods",
+  "license": "MIT"
+}
